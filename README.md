@@ -251,6 +251,34 @@ The bootstrap command above does the following:
 - Deploys Flux Components to your Kubernetes Cluster. 
 - Configures Flux components to track the path /clusters/home-cluster/ in the repository
 
+By default **Flux** installs 4 components: **source-controller**, **kustomize-controller**, **helm-controller** and **notification-controller**, you can check that all of them are properly running by looking in the *flux-system* namespace.
+
+```sh
+❯ k get all -n flux-system
+NAME                                          READY   STATUS    RESTARTS   AGE
+pod/helm-controller-5f964c6579-z44r9          1/1     Running   0          6d18h
+pod/kustomize-controller-9c588946c-6h9fd      1/1     Running   0          6d18h
+pod/notification-controller-76dc5d768-z47jw   1/1     Running   0          6d18h
+pod/source-controller-6c49485888-gl6dz        1/1     Running   0          6d18h
+
+NAME                              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/notification-controller   ClusterIP   10.97.135.57    <none>        80/TCP    6d18h
+service/source-controller         ClusterIP   10.97.126.173   <none>        80/TCP    6d18h
+service/webhook-receiver          ClusterIP   10.107.72.214   <none>        80/TCP    6d18h
+
+NAME                                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/helm-controller           1/1     1            1           6d18h
+deployment.apps/kustomize-controller      1/1     1            1           6d18h
+deployment.apps/notification-controller   1/1     1            1           6d18h
+deployment.apps/source-controller         1/1     1            1           6d18h
+
+NAME                                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/helm-controller-5f964c6579          1         1         1       6d18h
+replicaset.apps/kustomize-controller-9c588946c      1         1         1       6d18h
+replicaset.apps/notification-controller-76dc5d768   1         1         1       6d18h
+replicaset.apps/source-controller-6c49485888        1         1         1       6d18h
+```
+
 And now, to move to the next steps, we can just clone the **GIT** repository we just created to start deploying apps and configuration onto our Cluster.
 
 ```sh

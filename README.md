@@ -146,7 +146,7 @@ bacterio   UnReady    control-plane   5d    v1.28.3
 ```
 In order to get a Ready state, we still have to install our Pod Network Add-on or **CNI**.
 
-### Installing the Container Network Interface (CNI) add-on
+### 🌐 Installing the Container Network Interface (CNI) add-on
 
 In order to install **Cilium** it is enough to follow the [Cillium Quick Installation](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/), we will ned with the *Cilium CLI* tool and *Cilium* installed in our Cluster.
 
@@ -169,6 +169,93 @@ kubectl taint nodes bacterio node-role.kubernetes.io/control-plane:NoSchedule-
 ```sh
 kubectl run testpod --image=nginx
 kubectl get pods
+```
+## 🤖 Installing Flux
+
+[Flux](https://fluxcd.io/) is a set of continuous and progressive delivery solutions for Kubernetes that are open and extensible. In a more plain language Flux is a tool for keeping Kubernetes clusters in sync with sources of configuration (like Git repositories), that way we can use GIT a source of truth and use it to interact with our Cluster.
+
+### Install the Flux CLI
+
+The **Flux** command-line interface (CLI) is used to bootstrap and interact with Flux.
+
+```sh
+curl -s https://fluxcd.io/install.sh | sudo bash
+```
+
+And [here](https://fluxcd.io/flux/cmd/flux_completion_bash/) you can find instructions to add *bash* autocompletion features to the shell.
+
+### Export your credentials
+
+Export your GitHub personal access token and username:
+
+```sh
+export GITHUB_TOKEN=<your-token>
+export GITHUB_USER=<your-username>
+```
+
+The *GITHUB_TOKEN* in use here is **PAT**(Personal Access Token)
+
+### Check your Kubernetes Cluster
+
+We can use the Flux CLI to run a pre-flight check on our Cluster and see if we fulfill all the basic requirements to install **Flux**.
+
+```sh
+flux check --pre
+```
+Which should produce an output like:
+```sh
+► checking prerequisites
+✔ kubernetes 1.28.2 >=1.25.0
+✔ prerequisites checks passed
+```
+
+### Installing Flux onto the Cluster
+
+For information on how to bootstrap using a GitHub org, Gitlab and other git providers, see [Bootstraping](https://fluxcd.io/flux/installation/bootstrap/).
+
+```sh
+flux bootstrap github \
+  --owner=$GITHUB_USER \
+  --repository=home-cluster \
+  --branch=main \
+  --path=./clusters/home-cluster \
+  --personal
+```
+
+The output is similar to:
+
+```sh
+► connecting to github.com
+✔ repository created
+✔ repository cloned
+✚ generating manifests
+✔ components manifests pushed
+► installing components in flux-system namespace
+deployment "source-controller" successfully rolled out
+deployment "kustomize-controller" successfully rolled out
+deployment "helm-controller" successfully rolled out
+deployment "notification-controller" successfully rolled out
+✔ install completed
+► configuring deploy key
+✔ deploy key configured
+► generating sync manifests
+✔ sync manifests pushed
+► applying sync manifests
+◎ waiting for cluster sync
+✔ bootstrap finished
+```
+The bootstrap command above does the following:
+
+- Creates a git repository *home-cluster* on your GitHub account.
+- Adds Flux component manifests to the repository.
+- Deploys Flux Components to your Kubernetes Cluster. 
+- Configures Flux components to track the path /clusters/home-cluster/ in the repository
+
+And now, to move to the next steps, we can just clone the **GIT** repository we just created to start deploying apps and configuration onto our Cluster.
+
+```sh
+git clone git@github.com:cc250080/home-cluster.git
+cd home-cluster
 ```
 
 

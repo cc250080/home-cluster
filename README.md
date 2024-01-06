@@ -148,7 +148,7 @@ In order to get a Ready state, we still have to install our Pod Network Add-on o
 
 ### 🌐 Installing the Container Network Interface (CNI) add-on
 
-In order to install **Cilium** it is enough to follow the [Cillium Quick Installation](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/), we will ned with the *Cilium CLI* tool and *Cilium* installed in our Cluster.
+In order to install **Cilium** it is enough to follow the [Cillium Quick Installation](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/), we will need the *Cilium CLI* tool and *Cilium* installed in our Cluster.
 
 And after that the Cluster will become Ready.
 

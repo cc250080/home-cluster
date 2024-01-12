@@ -1,0 +1,10 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: gabe565
+  namespace: default
+spec:
+  type: oci
+  interval: 5m0s
+  url: oci://ghcr.io/gabe565/charts 

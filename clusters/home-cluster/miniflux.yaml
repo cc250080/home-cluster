@@ -1,0 +1,92 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: gabe565
+  namespace: default
+spec:
+  type: oci
+  interval: 5m0s
+  url: oci://ghcr.io/gabe565/charts 
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: miniflux
+  namespace: default
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: miniflux 
+      version: '>=0.6.11'
+      sourceRef:
+        kind: HelmRepository
+        name: gabe565
+        namespace: default
+      interval: 60m
+  values:
+    replicaCount: 1
+    env:
+      # -- Postgresql connection parameters. Will be generated if Postgresql subchart is enabled. [[ref]](https://miniflux.app/docs/configuration.html#database-url)
+      DATABASE_URL: "postgres://miniflux:miniflux@10.9.8.1/miniflux?sslmode=disable"
+      # -- Set to `1` to create an admin user from environment variables.
+      CREATE_ADMIN: "1"
+      # -- Admin user login, it's used only if `CREATE_ADMIN` is enabled.
+      ADMIN_USERNAME: cc250080
+      # -- Admin user password, it's used only if `CREATE_ADMIN` is enabled.
+      ADMIN_PASSWORD: changeme
+
+    service:
+      # -- Configures service settings for the chart.
+      # @default -- See [values.yaml](./values.yaml)
+      main:
+        ports:
+          http:
+            port: 8080
+
+    ingress:
+    # -- Enable and configure ingress settings for the chart under this key.
+    # @default -- See [values.yaml](./values.yaml)
+      main:
+        enabled: false
+        # hosts:
+        #   - host: chart-example.local
+      #     paths:
+      #       - path: /
+      # tls:
+      #   - secretName: chart-example.local-tls
+      #     hosts:
+      #       - chart-example.local
+
+  # -- Enable and configure postgresql database subchart under this key.
+  #    For more options see [postgresql chart documentation](https://github.com/bitnami/charts/tree/master/bitnami/postgresql)
+  # @default -- Enabled (See [values.yaml](./values.yaml) for more details)
+    postgresql:
+      enabled: false
+      auth:
+        database: miniflux
+        postgresPassword: changeme
+      # Uncomment to create a non-root user
+      # username: miniflux
+      # password: changeme
+      persistence:
+        enabled: false
+      # storageClass: ""
+      # size: 8Gi
+
+    serviceMonitor:
+      main:
+      # -- Enables or disables the serviceMonitor.
+        enabled: false
+      # -- List of networks allowed to access the `/metrics` endpoint (comma-separated values).
+      #    [[ref]](https://miniflux.app/docs/configuration.html#metrics-allowed-networks)
+        allowedNetworks: 127.0.0.1/8
+      # -- Configures the endpoints for the serviceMonitor.
+      # @default -- See [values.yaml](./values.yaml)
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s

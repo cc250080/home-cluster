@@ -6,7 +6,7 @@ My personal Goal with this project is to have an easy and elegant way to manage 
 
 ## ✨ Features
 
-- Documented **manual** Installation of Kubernetes v1.28 mono-node cluster in Debian 12 *BookWorm*
+- Documented **manual** Installation of Kubernetes v1.29 mono-node cluster in Debian 12 *BookWorm*
 - Opinionated implementation of Flux with [strong community support](https://github.com/onedr0p/flux-cluster-template#-support)
 - Encrypted secrets thanks to [SOPS](https://github.com/getsops/sops) and [Age](https://github.com/FiloSottile/age)
 - Web application firewall thanks to [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps)
@@ -112,7 +112,7 @@ After Debian is installed:
 
 
     ```sh
-    sudo vi /etc/containerd/config.toml
+    sudo vim /etc/containerd/config.toml
     ```
 
     ```sh
@@ -132,17 +132,26 @@ Edit the containerd configuration file and ensure that the option SystemdCgroup 
 
 After that restart containerd and ensure everything is up and running properly.
 
-### 🔧 Install Kubernetes with KubeAdm
 
-When we already have a CRI installed(containerd) and starting properly using systemd it is the time to install K8s, for that I wont be documenting the steps, just follow the instructions from the official Kubernetes [documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/).
+    sudo systemctl restart containerd.service
+    sudo systemctl status containerd.service
+
+
+### 🔧 Install Kubernetes with KubeAdm and without KubeProxy
+
+When we already have a CRI installed(containerd) and starting properly using systemd it is the time to install K8s, for this guide we want to provision a Kubernetes cluster without *kube-proxy*, and to use *Cilium* to fully replace it. For simplicity, we will use kubeadm to bootstrap the cluster. For help with installing *kubeadm* and for more provisioning options please refer to [the official Kubeadm documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/).
 
 Then, after installing kubeadm, kubectl and kubelet and perform the **kubeadm init** we can ensure everything is *almost* up and ready in our cluster:
+
+```sh
+>  sudo kubeadm init --skip-phases=addon/kube-proxy
+```
 
 ```sh
 ~ on  main [!?] 
 ❯ k get nodes
 NAME       STATUS   ROLES           AGE   VERSION
-bacterio   UnReady    control-plane   5d    v1.28.3
+bacterio   UnReady    control-plane   5d    v1.29.3
 ```
 In order to get a Ready state, we still have to install our Pod Network Add-on or **CNI**.
 
@@ -156,7 +165,7 @@ And after that the Cluster will become Ready.
 ~ on  main [!?] 
 ❯ k get nodes
 NAME       STATUS   ROLES           AGE   VERSION
-bacterio   Ready    control-plane   5d    v1.28.3
+bacterio   Ready    control-plane   5d    v1.29.3
 ```
 ### Untaint the Cluster to be able to Run Pods
 
@@ -205,7 +214,7 @@ flux check --pre
 Which should produce an output like:
 ```sh
 ► checking prerequisites
-✔ kubernetes 1.28.2 >=1.25.0
+✔ kubernetes 1.29.2 >=1.25.0
 ✔ prerequisites checks passed
 ```
 

@@ -146,6 +146,7 @@ Then, after installing kubeadm, kubectl and kubelet and perform the **kubeadm in
 ```sh
 >  sudo kubeadm init --skip-phases=addon/kube-proxy
 ```
+Notice that we are skipping the installation of kube-proxy, which isn't a default option. We do this because we want to use *Cilium* to take over the role of the kube-proxy. This is [requisite](https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/#what-is-gateway-api) of *Cilium* to be able to use its implementation of the [Gateway API](https://docs.cilium.io/en/stable/network/servicemesh/ingress-to-gateway/ingress-to-gateway/#benefits-of-the-gateway-api).
 
 ```sh
 ~ on  main [!?] 
@@ -157,7 +158,42 @@ In order to get a Ready state, we still have to install our Pod Network Add-on o
 
 ### 🌐 Installing the Container Network Interface (CNI) add-on
 
-In order to install **Cilium** it is enough to follow the [Cillium Quick Installation](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/), we will need the *Cilium CLI* tool and *Cilium* installed in our Cluster.
+In this guide we will install *Cilium* using *Helm*, as described in the [Cilium Documentation](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#kubeproxy-free) for *Kube-Proxy* free kubernetes.
+
+1. First we add the *Cilium* Helm repository:
+```bash
+helm repo add cilium https://helm.cilium.io/
+```
+
+2. We install *Cilium* setting up the right env vars:
+```bash
+API_SERVER_IP=<your_api_server_ip>
+# Kubeadm default is 6443
+API_SERVER_PORT=<your_api_server_port>
+helm install cilium cilium/cilium --version 1.15.1 \
+    --namespace kube-system \
+    --set kubeProxyReplacement=true \
+    --set operator-replicas=1
+    --set gatewayAPI.ebabled=true
+    --set k8sServiceHost=${API_SERVER_IP} \
+    --set k8sServicePort=${API_SERVER_PORT}
+```
+
+This will install Cilium as a CNI plugin with the eBPF kube-proxy replacement to implement handling of Kubernetes services of type ClusterIP, NodePort, LoadBalancer and services with externalIPs. As well, the eBPF kube-proxy replacement also supports hostPort for containers such that using portmap is not necessary anymore.
+
+Finally, as a last step, verify that Cilium has come up correctly on all nodes and is ready to operate:
+
+```bash
+$ kubectl -n kube-system get pods -l k8s-app=cilium
+NAME                READY     STATUS    RESTARTS   AGE
+cilium-fmh8d        1/1       Running   0          10m
+```
+
+Note, in above Helm configuration, the **kubeProxyReplacement** has been set to **true** mode. This means that the Cilium agent will bail out in case the underlying Linux kernel support is missing.
+
+By default, Helm sets **kubeProxyReplacement=false**, which only enables per-packet in-cluster load-balancing of ClusterIP services.
+
+Cilium’s eBPF kube-proxy replacement is supported in direct routing as well as in tunneling mode.
 
 And after that the Cluster will become Ready.
 
@@ -167,6 +203,16 @@ And after that the Cluster will become Ready.
 NAME       STATUS   ROLES           AGE   VERSION
 bacterio   Ready    control-plane   5d    v1.29.3
 ```
+
+#### Validate the Setup
+
+After deploying Cilium with above Quick-Start guide, we can first validate that the Cilium agent is running in the desired mode:
+
+```bash
+$ kubectl -n kube-system exec ds/cilium -- cilium-dbg status | grep KubeProxyReplacement
+KubeProxyReplacement:   True        [eth0 (Direct Routing), eth1]
+```
+
 ### Untaint the Cluster to be able to Run Pods
 
 Finally, we untaint the *Control-Plane* node to allow it to run workloads and test that it can in fact run a *Pod*.

@@ -156,6 +156,19 @@ bacterio   UnReady    control-plane   5d    v1.29.3
 ```
 In order to get a Ready state, we still have to install our Pod Network Add-on or **CNI**.
 
+### Install Gateway API
+
+Before installing the *Container Network Interface* we will install the necessary *CRD*s for the Gateway API to work:
+
+```bash
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_grpcroutes.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+``` 
+
 ### 🌐 Installing the Container Network Interface (CNI) add-on
 
 In this guide we will install *Cilium* using *Helm*, as described in the [Cilium Documentation](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#kubeproxy-free) for *Kube-Proxy* free kubernetes.

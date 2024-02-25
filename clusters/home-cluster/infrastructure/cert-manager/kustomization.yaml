@@ -7,3 +7,4 @@ resources:
   - cert-manager.yaml
   - cloudflare-api-key-secret.yaml
   - clusterIssuer.yaml
+  - certificate-carlescc.yaml

@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-carlecc
+  namespace: default
+spec:
+  secretName: wildcard-carlescc # we reference secrets in gateway
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  issuerRef:
+    name: carlescc-issuer
+    kind: ClusterIssuer
+  commonName: "*.carles.cc"
+  dnsNames:
+  - "*.carles.cc"

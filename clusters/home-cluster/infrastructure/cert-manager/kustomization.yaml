@@ -5,6 +5,6 @@ resources:
   - ns-cert-manager.yaml
   - cert-manager.crds.yaml
   - cert-manager.yaml
-  - cloudflare-api-key-secret.yaml
+  - cloudflare-api-token-secret.yaml
   - clusterIssuer.yaml
   - certificate-carlescc.yaml

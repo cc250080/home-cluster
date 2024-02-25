@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: carlescc-issuer
+spec:
+  acme:
+    email: carles@carles.cc
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: issuer-carlescc-key
+    solvers:
+    - dns01:
+        cloudflare:
+          email: carles@carles.cc
+          apiKeySecretRef:
+            name: cloudflare-api-key-secret
+            key: api-key

@@ -13,5 +13,5 @@ spec:
         cloudflare:
           email: carles@carles.cc
           apiTokenSecretRef:
-            name: cloudflare-api-key-secret
+            name: cloudflare-api-token-secret
             key: api-token

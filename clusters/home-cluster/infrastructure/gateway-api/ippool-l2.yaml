@@ -1,0 +1,19 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: bacterio-ip-pool
+  namespace: kube-system
+spec:
+  cidrs:
+  - cidr: "10.9.8.13/32"
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: bacterio-l2advertisement-policy
+  namespace: kube-system
+spec:
+  interfaces:
+    - ^enx+ # host interface regex
+  externalIPs: true
+  loadBalancerIPs: true

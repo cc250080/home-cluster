@@ -1,0 +1,25 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: bacterio-gw
+  namespace: default
+spec:
+  gatewayClassName: cilium
+  addresses:
+    - value: "10.9.8.13"
+  listeners:
+    - name: bacterio-http
+      port: 80
+      protocol: HTTP
+    - name: bacterio-https
+      port: 443
+      protocol: HTTPS
+      hostname: "*.carles.cc"
+      tls:
+        mode: Terminate
+        certificateRefs:
+        - kind: Secret
+          name: wildcard-carlescc
+      allowedRoutes:
+        namespaces:
+          from: All

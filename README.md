@@ -184,12 +184,18 @@ API_SERVER_IP=<your_api_server_ip>
 # Kubeadm default is 6443
 API_SERVER_PORT=<your_api_server_port>
 helm install cilium cilium/cilium --version 1.15.1 \
+    --set operator-replicas=1 #We are installing on a mono-node so this is necessary
     --namespace kube-system \
-    --set kubeProxyReplacement=true \
-    --set operator-replicas=1
-    --set gatewayAPI.ebabled=true
+    --set kubeProxyReplacement=strict \
+    --set gatewayAPI.ebabled=true \
     --set k8sServiceHost=${API_SERVER_IP} \
-    --set k8sServicePort=${API_SERVER_PORT}
+    --set k8sServicePort=${API_SERVER_PORT} \
+    --set l2announcements.enabled=true \
+    --set externalIPs.enabled=true \
+    --set hubble.ui.enabled=true \
+    --set hubble.relay.enabled=true \
+    --set k8s.requireIPv4PodCIDR=true \
+    --set annotateK8sNode=true
 ```
 
 This will install Cilium as a CNI plugin with the eBPF kube-proxy replacement to implement handling of Kubernetes services of type ClusterIP, NodePort, LoadBalancer and services with externalIPs. As well, the eBPF kube-proxy replacement also supports hostPort for containers such that using portmap is not necessary anymore.
@@ -202,7 +208,7 @@ NAME                READY     STATUS    RESTARTS   AGE
 cilium-fmh8d        1/1       Running   0          10m
 ```
 
-Note, in above Helm configuration, the **kubeProxyReplacement** has been set to **true** mode. This means that the Cilium agent will bail out in case the underlying Linux kernel support is missing.
+Note, in above Helm configuration, the **kubeProxyReplacement** has been set to **strict** mode. This means that the Cilium agent will bail out in case the underlying Linux kernel support is missing.
 
 By default, Helm sets **kubeProxyReplacement=false**, which only enables per-packet in-cluster load-balancing of ClusterIP services.
 
@@ -238,6 +244,15 @@ kubectl taint nodes bacterio node-role.kubernetes.io/control-plane:NoSchedule-
 kubectl run testpod --image=nginx
 kubectl get pods
 ```
+
+#### Hubble UI
+
+*Cilium* provides a *Hubble* for observability, it can both be used using the *Hubble CLI* or the *UI*, in order to access the *Hubble UI* you just need to execute:
+
+```bash
+cilium hubble ui
+```
+
 ## 🤖 Installing Flux
 
 [Flux](https://fluxcd.io/) is a set of continuous and progressive delivery solutions for Kubernetes that are open and extensible. In a more plain language Flux is a tool for keeping Kubernetes clusters in sync with sources of configuration (like Git repositories), that way we can use GIT a source of truth and use it to interact with our Cluster.
@@ -357,3 +372,5 @@ cd home-cluster
 ### Flux Structure
 
 To structure the repository we use a mono-repo approach, the flux documentation [Ways of structuring your repositories](https://fluxcd.io/flux/guides/repository-structure/) is very helpful here specially the following example which I took as a [baseline](https://github.com/fluxcd/flux2-kustomize-helm-example).
+
+

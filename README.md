@@ -373,4 +373,41 @@ cd home-cluster
 
 To structure the repository we use a mono-repo approach, the flux documentation [Ways of structuring your repositories](https://fluxcd.io/flux/guides/repository-structure/) is very helpful here specially the following example which I took as a [baseline](https://github.com/fluxcd/flux2-kustomize-helm-example).
 
+```bash
+├── apps #The applications are installed in this folders
+│   └── miniflux
+│       ├── kustomization.yaml
+│       ├── miniflux-httproute.yaml
+│       └── miniflux.yaml
+├── flux-system # Flux components
+│   ├── gotk-components.yaml
+│   ├── gotk-sync.yaml
+│   └── kustomization.yaml
+└── infrastructure # This is executed before apps, here the yamls are for controllers, infrastructure and sources like Helm Repositories
+    ├── cert-manager
+    │   ├── certificate-carlescc.yaml
+    │   ├── cert-manager.crds.yaml
+    │   ├── cert-manager.yaml
+    │   ├── cloudflare-api-token-secret.yaml
+    │   ├── clusterIssuer.yaml
+    │   ├── kustomization.yaml
+    │   └── ns-cert-manager.yaml
+    ├── gateway-api
+    │   ├── bacterio-gw.yaml
+    │   ├── ippool-l2.yaml
+    │   └── kustomization.yaml
+    └── sources
+```
+
+### Gateway API and Cert-Manager
+
+![Gateway API](./img/home-cluster-gatewayapi.webp)
+
+### Storage: Kubernetes NFS CSI Driver
+
+The NFS CSI Driver allows a Kubernetes cluster to access NFS servers on Linux. The driver is installed in the Kubernetes cluster and requires existing and configured NFS servers.
+
+The status of the project is GA, meaning it is in General Availability and should be considered to be stable for production use.
+
+
 

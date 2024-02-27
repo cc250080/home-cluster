@@ -14,3 +14,5 @@ spec:
         name: csi-driver-nfs
         namespace: default
       interval: 60m
+  values:
+    replicaCount: 1

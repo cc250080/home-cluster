@@ -4,7 +4,7 @@ metadata:
   name: nfs-csi
 provisioner: nfs.csi.k8s.io
 parameters:
-  server: ofelica.carles.cc 
+  server: ofelia.carles.cc 
   share: /volume1/k8snfs
 reclaimPolicy: Retain
 volumeBindingMode: Immediate

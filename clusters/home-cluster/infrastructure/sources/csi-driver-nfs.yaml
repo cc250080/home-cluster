@@ -1,9 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
-  name: gabe565
+  name: csi-driver-nfs
   namespace: default
 spec:
-  type: oci
   interval: 10m0s
-  url: oci://ghcr.io/gabe565/charts 
+  url: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts

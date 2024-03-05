@@ -8,12 +8,10 @@ My personal Goal with this project is to have an easy and elegant way to manage 
 
 - Documented **manual** Installation of Kubernetes v1.29 mono-node cluster in Debian 12 *BookWorm*
 - Opinionated implementation of Flux with [strong community support](https://github.com/onedr0p/flux-cluster-template#-support)
-- Encrypted secrets thanks to [SOPS](https://github.com/getsops/sops) and [Age](https://github.com/FiloSottile/age)
-- Web application firewall thanks to [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps)
-- SSL certificates thanks to [Cloudflare](https://cloudflare.com) and [cert-manager](https://cert-manager.io)
-- Next-gen networking thanks to [Cilium](https://cilium.io/)
+- Encrypted secrets thanks to [SOPS](https://github.com/getsops/sops)
+- SSL certificates thanks to [Cloudflare](https://cloudflare.com), [cert-manager](https://cert-manager.io) and [let'sencrypt](https://letsencrypt.org/)
+- Next-gen networking thanks to [Cilium](https://cilium.io/) and [Gateway API](https://gateway-api.sigs.k8s.io/)
 - A [Renovate](https://www.mend.io/renovate)-ready repository
-- Integrated [GitHub Actions](https://github.com/features/actions)
 
 ... and more!
 
@@ -34,9 +32,9 @@ Before getting started everything below must be taken into consideration, you mu
 
 According to the Official Documentation the [requirements](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#before-you-begin) for kubernetes are just 2 Cores and 2 Gb of Ram to install a Control-Plane node, but obviously only with this we would be leaving little room left for our apps.
 
-📍 For my home-lab I will only be installing one Control-Plane node, so to run apps in it I will remove the Kubernetes *Taint* that block worker nodes from running normal Pods.
+📍 For my home-lab I will only be installing one Control-Plane node, so to run apps in it I will remove the Kubernetes *Taint* that block control-plane nodes from running normal Pods.
 
-📍 I Choose Debian Stable because IMO is the best hassle-free, community-driven and stability and security focused distribution.
+📍 I Choose Debian Stable because IMO is the best hassle-free, community-driven and stability and security focused distribution. [Talos](https://www.talos.dev/) would be another great option.
 
 ### 🌀 Debian Installation
 
@@ -247,7 +245,7 @@ kubectl get pods
 
 #### Hubble UI
 
-*Cilium* provides a *Hubble* for observability, it can both be used using the *Hubble CLI* or the *UI*, in order to access the *Hubble UI* you just need to execute:
+*Cilium* provides *Hubble* for observability, it can both be used using the *Hubble CLI* or the *UI*, in order to access the *Hubble UI* you just need to execute:
 
 ```bash
 cilium hubble ui
@@ -255,7 +253,7 @@ cilium hubble ui
 
 ## 🤖 Installing Flux
 
-[Flux](https://fluxcd.io/) is a set of continuous and progressive delivery solutions for Kubernetes that are open and extensible. In a more plain language Flux is a tool for keeping Kubernetes clusters in sync with sources of configuration (like Git repositories), that way we can use GIT a source of truth and use it to interact with our Cluster.
+[Flux](https://fluxcd.io/) is a set of continuous and progressive delivery solutions for Kubernetes that are open and extensible. In a more plain language Flux is a tool for keeping Kubernetes clusters in sync with sources of configuration (like Git repositories), that way we can use GIT as source of truth and use it to interact with our Cluster.
 
 ### Install the Flux CLI
 
@@ -276,7 +274,7 @@ export GITHUB_TOKEN=<your-token>
 export GITHUB_USER=<your-username>
 ```
 
-The *GITHUB_TOKEN* in use here is **PAT**(Personal Access Token)
+The kind of *GITHUB_TOKEN* in use here is **PAT**(Personal Access Token)
 
 ### Check your Kubernetes Cluster
 
@@ -408,6 +406,38 @@ To structure the repository we use a mono-repo approach, the flux documentation 
 The NFS CSI Driver allows a Kubernetes cluster to access NFS servers on Linux. The driver is installed in the Kubernetes cluster and requires existing and configured NFS servers.
 
 The status of the project is GA, meaning it is in General Availability and should be considered to be stable for production use.
+
+### Securing Kubernetes Secrets with Sops
+
+In the past, I loaded kubernetes secrets by hand with kubectl apply and kept them out of any shared storage, including git repositories. However, in my quest to follow the gitops way, I wanted a better option with much less manual work. My goal is to build a kubernetes deployment that could be redeployed from the git repository at a moment’s notice with the least amount of work required.
+
+In order to store secrets safely in a public or private Git repository, we will use Mozilla’s [SOPS](https://github.com/mozilla/sops) CLI to encrypt Kubernetes secrets with Age, OpenPGP, AWS KMS, GCP KMS or Azure Key Vault.
+
+In my case I will use age:
+
+```bash
+ sudo apt install age
+ curl -LO https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.linux.amd64
+ sudo mv sops-v3.8.1.linux.amd64 /usr/local/bin/sops
+ sudo chmod +x /usr/local/bin/sops
+```
+#### Verify checksums file signature
+
+```bash
+# Download the checksums file, certificate and signature
+curl -LO https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.checksums.txt
+curl -LO https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.checksums.pem
+curl -LO https://github.com/getsops/sops/releases/download/v3.8.1/sops-v3.8.1.checksums.sig
+
+# Verify the checksums file
+cosign verify-blob sops-v3.8.1.checksums.txt \
+  --certificate sops-v3.8.1.checksums.pem \
+  --signature sops-v3.8.1.checksums.sig \
+  --certificate-identity-regexp=https://github.com/getsops \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com
+```
+
+
 
 
 

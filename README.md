@@ -469,7 +469,28 @@ creation_rules:
     age: age1wnvnq64tpze4zjdmq2n44eh7jzkxf5ra7mxjvjld6cjwtaddffqqc54w23
 ```
 
+Finally, we must tell flux that it needs to decrypt secrets and we must provide the location of the decryption key. Flux is built heavily on [Kustomize](https://kustomize.io/) manifests and that’s where our key configuration belongs.
 
+Edit the file *gotk-sync.yaml* from the flux-system folder in the base of your Git cluster configuration:
+
+```yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flux-system
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./clusters/home-cluster
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+```
 
 
 ## Gateway API and SSL <a id="gateway"></a>

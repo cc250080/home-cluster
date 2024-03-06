@@ -15,9 +15,10 @@ spec:
         namespace: default
       interval: 60m
   values:
-	  commonConfig:
-   		replication_factor: 1
- 		storage:
-   		type: 'filesystem'
-  	singleBinary:
-  		replicas: 1
+    loki:
+      commonConfig:
+        replication_factor: 1
+      storage:
+        type: 'filesystem'
+      singleBinary:
+        replicas: 1

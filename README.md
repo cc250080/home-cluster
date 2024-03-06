@@ -502,11 +502,139 @@ sops -e cloudflare-api-token-secret.yaml | tee cloudflare-api-token-secret-encry
 
 ## Gateway API and SSL <a id="gateway"></a>
 
+Thanks to Cilium and [Gateway API](https://gateway-api.sigs.k8s.io/) we can have an installation of Services that do not require Ingress Controllers or [MetalLB](https://metallb.universe.tf/). Note that from now on all the actions in the cluster will be performed using GitOps and organizing/pushing yamls into the GitOps Repository.
+
 ![Gateway API](./img/home-cluster-gatewayapi.webp)
+
+I wont go here in much detail about the role-oriented nature of Gateway API, but let's say that we will build some generic or more static components that can be used by all services, and then each application that we install will only need a small and simple HTTPRoute object to function.
+
+![Gateway API Roles](./img/gatewayapi-role.png)
+
+The *GatewayClass* is something we already created when we installed *Cilium*, in this case our GatewayClass will be **Cilium**.
+
+### CiliumLoadBalancerIPPool and CiliumL2AnnouncementPolicy
+
+This *Cilium* objects are used to ensure a Pool of external IPs on our **Home-Server**, they work by attaching an IP to a Pool and then use ARP over the physical network interfaces. Note that I have used a *refex* to configure the *ARP* advertisement. *BGP* is also supported by *Cilium* but that would be overkill for my small home setup.
+
+```yaml
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: bacterio-ip-pool
+  namespace: kube-system
+spec:
+  cidrs:
+  - cidr: "10.9.8.13/32"
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: bacterio-l2advertisement-policy
+  namespace: kube-system
+spec:
+  interfaces:
+    - ^enx+ # host interface regex
+  externalIPs: true
+  loadBalancerIPs: true
+```
+### Gateway
+
+The Gateway objects listens on the external IP address that we reserved in the previos step and listens on port 80 and 443, doing TLS offloading. For tls it consumes a wildcard certificate managed by *cert-manager*. This *Gateway* will be used for all the Workloads in my server that needs **HTTP** or **HTTPS** access.
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: bacterio-gw
+  namespace: default
+spec:
+  gatewayClassName: cilium
+  addresses:
+    - value: "10.9.8.13"
+  listeners:
+    - name: bacterio-http
+      port: 80
+      protocol: HTTP
+    - name: bacterio-https
+      port: 443
+      protocol: HTTPS
+      hostname: "*.carles.cc"
+      tls:
+        mode: Terminate
+        certificateRefs:
+        - kind: Secret
+          name: wildcard-carlescc
+      allowedRoutes:
+        namespaces:
+          from: All
+```
+
+### Example of an HTTPRoute
+
+The HTTPRoute object is just the nex between the *Service* of our application and the *Gateway* and is a very simple object, here I provide an example of the HTTPRoute I configured for my *RSS* server (miniflux). Basically we specify the *Gateway* we want to use as the Parent, the *Service* as the *backendRef* and the *hostname* we want to use for our application.
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: miniflux-route
+  namespace: default
+spec:
+  parentRefs:
+  - name: bacterio-gw
+  hostnames:
+  - "miniflux.carles.cc"
+  rules:
+  - backendRefs:
+    - name: miniflux
+      port: 8080
+```
 
 ## Storage: Kubernetes NFS CSI Driver <a id="storage"></a>
 
 The NFS CSI Driver allows a Kubernetes cluster to access NFS servers on Linux. The driver is installed in the Kubernetes cluster and requires existing and configured NFS servers.
 
 The status of the project is GA, meaning it is in General Availability and should be considered to be stable for production use.
+
+The installation is also pretty straightforward. First we install the NFS CSI Driver:
+
+```yaml
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: csi-driver-nfs
+  namespace: kube-system
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: csi-driver-nfs 
+      version: '4.6.*'
+      sourceRef:
+        kind: HelmRepository
+        name: csi-driver-nfs
+        namespace: default
+      interval: 60m
+  values:
+    replicaCount: 1
+```
+
+And then we create a *StorageClass* that can be used by our applications:
+
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-csi
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: ofelia.carles.cc 
+  share: /volume1/k8snfs
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
+```
+
+Here the parameters server and share are pointing to my personal NAS server, which should be able prior to performing this task.
+
+
 

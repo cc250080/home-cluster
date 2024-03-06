@@ -492,6 +492,13 @@ spec:
       name: sops-age
 ```
 
+#### Encrypt a Secret with Sops
+
+Now we are ready to encrypt a secret and push it into our GitOps Repository:
+
+```bash
+sops -e cloudflare-api-token-secret.yaml | tee cloudflare-api-token-secret-encrypted.yaml
+```
 
 ## Gateway API and SSL <a id="gateway"></a>
 

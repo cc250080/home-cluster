@@ -6,3 +6,4 @@ resources:
   - csi-driver-nfs.yaml
   - nextcloud.yaml
   - grafana.yaml
+  - prometheus-community.yaml

@@ -23,4 +23,5 @@ spec:
     singleBinary:
       replicas: 1
       persistence:
-        enabled: "false"
+        size: 50Gi
+        storageClass: "nfs-csi" 

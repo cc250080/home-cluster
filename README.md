@@ -439,6 +439,39 @@ cosign verify-blob sops-v3.8.1.checksums.txt \
   --certificate-oidc-issuer=https://token.actions.githubusercontent.com
 ```
 
+#### Create the Age key and insert it in our Cluster
+
+```bash
+ age-keygen -o age.agekey
+Public key: age1wnvnq64tpze4zjdmq2n44eh7jzkxf5ra7mxjvjld6cjwtaddffqqc54w23
+ cat age.agekey
+# created: 2022-04-19T14:41:19-05:00
+# public key: age1wnvnq64tpze4zjdmq2n44eh7jzkxf5ra7mxjvjld6cjwtaddffqqc54w23
+AGE-SECRET-KEY-13T0N7N0W9NZKDXEFYYPWU7GN65W3UPV6LRERXUZ3ZGED8SUAAQ4SK6SMDL
+```
+
+As you can see, Age creates both a Public and a Private Key. I recommend that you store this Secret now in your to-go key management software.
+
+Create a secret with the age private key, the key name must end with .agekey to be detected as an age key:
+
+```bash
+cat age.agekey |
+kubectl create secret generic sops-age \
+--namespace=flux-system \
+--from-file=age.agekey=/dev/stdin
+```
+
+Next, make encryption easier by creating a small configuration file for SOPS. This allows you to encrypt quickly without telling SOPS which key you want to use. Create a .sops.yaml file like this one in the root directory of your flux repository:
+
+```bash
+creation_rules:
+  - encrypted_regex: '^(data|stringData)$'
+    age: age1wnvnq64tpze4zjdmq2n44eh7jzkxf5ra7mxjvjld6cjwtaddffqqc54w23
+```
+
+
+
+
 ## Gateway API and SSL <a id="gateway"></a>
 
 ![Gateway API](./img/home-cluster-gatewayapi.webp)

@@ -1,10 +1,22 @@
 # flux-cluster
 Welcome to my **really** highly opinionated Repo for my GitOps home-lab. In this repo I install a basic Vanilla [Kubernetes](https://kubernetes.io/docs/home/) and I use [Flux](https://fluxcd.io/flux/) to manage its state.
 
-## 👋 Introduction
-My personal Goal with this project is to have an easy and elegant way to manage applications that I want to run in my kubernetes home-lab while at the same time use it to keep learning the intrinsicacies of Kubernetes and GitOps. That is why I took some choices like for example installing Vanilla Kubernetes by hand. You won't find here *Ansible* playbooks or other automatisms to install Kubernetes, Flux and its tools. For now I choose to install everything by hand and learn and interiorize during the process. It is my goal to take out any abstraction on top of the basic Kubernetes components while at the same time enjoying a useful GitOps installation.
+## **Table of Content:**
+- [Introduction](#introduction)
+- [Features](#features)
+- [Pre-start Checklist](#pre-start)
+- [Machine Preparation](#machine-prep)
+- [Kubernetes and Cillium](#k8s)
+- [Flux Installation](#flux)
+- [Gateway API and SSL](#gateway)
+- [Storage](#storage)
 
-## ✨ Features
+## 👋 Introduction <a id="introduction"></a>
+My personal Goal with this project is to have an easy and elegant way to manage applications that I want to run in my kubernetes home-lab, while at the same time use it to keep learning the intrinsicacies of Kubernetes and GitOps. That is why I took some choices like for example installing Vanilla Kubernetes by hand. You won't find here *Ansible* playbooks or other automatisms to install Kubernetes, Flux and its tools. For now I choose to install everything by hand and learn and interiorize during the process. It is my goal to take out any abstraction on top of the basic Kubernetes components while at the same time enjoying a useful GitOps installation.
+
+From a technical perspective I am interested in getting as much as possible out of [Cilium](https://cilium.io/) and [eBPF](https://ebpf.io/). I will replace *Kube-proxy*, the *ingress controller* and [MetalLB](https://metallb.universe.tf/) with [Cilium](https://cilium.io/) and [Gateway API](https://gateway-api.sigs.k8s.io/).
+
+## ✨ Features <a id="features"></a>
 
 - Documented **manual** Installation of Kubernetes v1.29 mono-node cluster in Debian 12 *BookWorm*
 - Opinionated implementation of Flux with [strong community support](https://github.com/onedr0p/flux-cluster-template#-support)
@@ -15,7 +27,7 @@ My personal Goal with this project is to have an easy and elegant way to manage 
 
 ... and more!
 
-## 📝 Pre-start checklist
+## 📝 Pre-start checklist <a id="pre-start"></a>
 
 Before getting started everything below must be taken into consideration, you must...
 
@@ -26,7 +38,7 @@ Before getting started everything below must be taken into consideration, you mu
 - [ ] be willing to commit encrypted secrets to a public GitHub repository.
 - [ ] have a DNS server that supports split DNS (e.g. [AdGuardHome](https://github.com/AdguardTeam/AdGuardHome) or<Down> Pi-Hole) deployed somewhere outside your cluster **ON** your home network.
 
-## 💻 Machine Preparation
+## 💻 Machine Preparation <a id="machine-prep"></a>
 
 ### System Requirements
 
@@ -135,7 +147,7 @@ After that restart containerd and ensure everything is up and running properly.
     sudo systemctl status containerd.service
 
 
-### 🔧 Install Kubernetes with KubeAdm and without KubeProxy
+## 🔧 Install Kubernetes with KubeAdm and without KubeProxy <a id="k8s"></a>
 
 When we already have a CRI installed(containerd) and starting properly using systemd it is the time to install K8s, for this guide we want to provision a Kubernetes cluster without *kube-proxy*, and to use *Cilium* to fully replace it. For simplicity, we will use kubeadm to bootstrap the cluster. For help with installing *kubeadm* and for more provisioning options please refer to [the official Kubeadm documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/).
 
@@ -230,6 +242,14 @@ $ kubectl -n kube-system exec ds/cilium -- cilium-dbg status | grep KubeProxyRep
 KubeProxyReplacement:   True        [eth0 (Direct Routing), eth1]
 ```
 
+#### Hubble UI
+
+*Cilium* provides *Hubble* for observability, it can both be used using the *Hubble CLI* or the *UI*, in order to access the *Hubble UI* you just need to execute:
+
+```bash
+cilium hubble ui
+```
+
 ### Untaint the Cluster to be able to Run Pods
 
 Finally, we untaint the *Control-Plane* node to allow it to run workloads and test that it can in fact run a *Pod*.
@@ -243,15 +263,7 @@ kubectl run testpod --image=nginx
 kubectl get pods
 ```
 
-#### Hubble UI
-
-*Cilium* provides *Hubble* for observability, it can both be used using the *Hubble CLI* or the *UI*, in order to access the *Hubble UI* you just need to execute:
-
-```bash
-cilium hubble ui
-```
-
-## 🤖 Installing Flux
+## 🤖 Installing Flux <a id="flux"></a>
 
 [Flux](https://fluxcd.io/) is a set of continuous and progressive delivery solutions for Kubernetes that are open and extensible. In a more plain language Flux is a tool for keeping Kubernetes clusters in sync with sources of configuration (like Git repositories), that way we can use GIT as source of truth and use it to interact with our Cluster.
 
@@ -386,7 +398,7 @@ To structure the repository we use a mono-repo approach, the flux documentation 
     │   ├── certificate-carlescc.yaml
     │   ├── cert-manager.crds.yaml
     │   ├── cert-manager.yaml
-    │   ├── cloudflare-api-token-secret.yaml
+    │   ├── cloudflare-api-token-secret-encrypted.yaml
     │   ├── clusterIssuer.yaml
     │   ├── kustomization.yaml
     │   └── ns-cert-manager.yaml
@@ -396,16 +408,6 @@ To structure the repository we use a mono-repo approach, the flux documentation 
     │   └── kustomization.yaml
     └── sources
 ```
-
-### Gateway API and Cert-Manager
-
-![Gateway API](./img/home-cluster-gatewayapi.webp)
-
-### Storage: Kubernetes NFS CSI Driver
-
-The NFS CSI Driver allows a Kubernetes cluster to access NFS servers on Linux. The driver is installed in the Kubernetes cluster and requires existing and configured NFS servers.
-
-The status of the project is GA, meaning it is in General Availability and should be considered to be stable for production use.
 
 ### Securing Kubernetes Secrets with Sops
 
@@ -437,7 +439,13 @@ cosign verify-blob sops-v3.8.1.checksums.txt \
   --certificate-oidc-issuer=https://token.actions.githubusercontent.com
 ```
 
+## Gateway API and SSL <a id="gateway"></a>
 
+![Gateway API](./img/home-cluster-gatewayapi.webp)
 
+## Storage: Kubernetes NFS CSI Driver <a id="storage"></a>
 
+The NFS CSI Driver allows a Kubernetes cluster to access NFS servers on Linux. The driver is installed in the Kubernetes cluster and requires existing and configured NFS servers.
+
+The status of the project is GA, meaning it is in General Availability and should be considered to be stable for production use.
 

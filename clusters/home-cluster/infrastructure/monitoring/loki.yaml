@@ -20,5 +20,5 @@ spec:
         replication_factor: 1
       storage:
         type: 'filesystem'
-      singleBinary:
-        replicas: 1
+    singleBinary:
+      replicas: 1

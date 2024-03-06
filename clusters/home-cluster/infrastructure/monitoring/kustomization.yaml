@@ -4,7 +4,3 @@ kind: Kustomization
 resources:
   - ns-monitoring.yaml
   - loki.yaml
-  - cert-manager.yaml
-  - cloudflare-api-token-secret-encrypted.yaml
-  - clusterIssuer.yaml
-  - certificate-carlescc.yaml

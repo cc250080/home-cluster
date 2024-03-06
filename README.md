@@ -9,7 +9,7 @@ Welcome to my **really** highly opinionated Repo for my GitOps home-lab. In this
 - [Kubernetes and Cillium](#k8s)
 - [Flux Installation](#flux)
 - [Gateway API and SSL](#gateway)
-- [Storage](#storage)
+- [Storage: NFS](#storage)
 
 ## 👋 Introduction <a id="introduction"></a>
 My personal Goal with this project is to have an easy and elegant way to manage applications that I want to run in my kubernetes home-lab, while at the same time use it to keep learning the intrinsicacies of Kubernetes and GitOps. That is why I took some choices like for example installing Vanilla Kubernetes by hand. You won't find here *Ansible* playbooks or other automatisms to install Kubernetes, Flux and its tools. For now I choose to install everything by hand and learn and interiorize during the process. It is my goal to take out any abstraction on top of the basic Kubernetes components while at the same time enjoying a useful GitOps installation.
@@ -634,7 +634,6 @@ reclaimPolicy: Retain
 volumeBindingMode: Immediate
 ```
 
-Here the parameters server and share are pointing to my personal NAS server, which should be able prior to performing this task.
-
+Here the parameters server and share are pointing to my personal NAS server, which should be ready prior to performing this task.
 
 

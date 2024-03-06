@@ -14,3 +14,12 @@ spec:
         name: prometheus
         namespace: default
       interval: 60m
+  values:
+    server:
+      persistentVolume:
+        enabled: true
+        size: 10Gi
+        storageClass: "nfs-csi"
+      replicaCount: 1
+    alertmanager:
+      enabled: false

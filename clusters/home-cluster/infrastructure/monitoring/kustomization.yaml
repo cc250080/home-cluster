@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ns-monitoring.yaml
   - loki.yaml
+  - prometheus.yaml

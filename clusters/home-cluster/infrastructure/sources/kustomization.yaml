@@ -7,3 +7,4 @@ resources:
   - nextcloud.yaml
   - grafana.yaml
   - prometheus-community.yaml
+  - robusta.yaml

@@ -15,6 +15,7 @@ spec:
         namespace: default
       interval: 60m
   values:
+    clusterName: "bacterio"
     globalConfig:
       signing_key: a16f8c09-e939-4d1f-b62d-fe7eb8778ac8
       account_id: 1f2ef0b9-a5c8-4409-95be-40524ec99628

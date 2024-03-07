@@ -6,3 +6,4 @@ resources:
   - loki.yaml
   - prometheus.yaml
   - grafana.yaml
+  - robusta.yaml

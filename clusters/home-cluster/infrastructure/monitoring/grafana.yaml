@@ -23,6 +23,9 @@ spec:
       enabled: 1
       size: 5Gi
       storageClassName: "nfs-csi"
+      accessModes:
+      - ReadWriteMany
+      type: pvc
     datasources:
       datasources.yaml:
         apiVersion: 1

@@ -10,6 +10,7 @@ Welcome to my **really** highly opinionated Repo for my GitOps home-lab. In this
 - [Flux Installation](#flux)
 - [Gateway API and SSL](#gateway)
 - [Storage: NFS](#storage)
+- [Monitoring and SRE: Robusta, Loki and Grafana](#monitoring)
 
 ## 👋 Introduction <a id="introduction"></a>
 My personal Goal with this project is to have an easy and elegant way to manage applications that I want to run in my kubernetes home-lab, while at the same time use it to keep learning the intrinsicacies of Kubernetes and GitOps. That is why I took some choices like for example installing Vanilla Kubernetes by hand. You won't find here *Ansible* playbooks or other automatisms to install Kubernetes, Flux and its tools. For now I choose to install everything by hand and learn and interiorize during the process. It is my goal to take out any abstraction on top of the basic Kubernetes components while at the same time enjoying a useful GitOps installation.
@@ -500,7 +501,7 @@ Now we are ready to encrypt a secret and push it into our GitOps Repository:
 sops -e cloudflare-api-token-secret.yaml | tee cloudflare-api-token-secret-encrypted.yaml
 ```
 
-## Gateway API and SSL <a id="gateway"></a>
+## ☁️ Gateway API and SSL <a id="gateway"></a>
 
 Thanks to Cilium and [Gateway API](https://gateway-api.sigs.k8s.io/) we can have an installation of Services that do not require Ingress Controllers or [MetalLB](https://metallb.universe.tf/). Note that from now on all the actions in the cluster will be performed using GitOps and organizing/pushing yamls into the GitOps Repository.
 
@@ -636,4 +637,22 @@ volumeBindingMode: Immediate
 
 Here the parameters server and share are pointing to my personal NAS server, which should be ready prior to performing this task.
 
+## 🤝 Monitoring and SRE: Robusta, Loki and Grafana <a id="monitoring"></a>
+
+This section is still a work in progress, I set up a minimal monitoring including an SRE application I want to explore, [Robusta](https://home.robusta.dev/).
+
+I isolated the components to keep things *KISS* and grafana is automatically setting up the datasources and importing a *Kubernetes* from the dashboard official page.
+
+In the future I plan to improve this by using an object storage for [Loki](https://grafana.com/oss/loki/) and also to allow me to use [Mimir](https://grafana.com/oss/mimir/).
+
+```bash
+├── monitoring
+│   ├── grafana.yaml
+│   ├── kustomization.yaml
+│   ├── loki.yaml
+│   ├── ns-monitoring.yaml
+│   ├── prometheus.yaml
+│   ├── promtail.yaml
+│   └── robusta.yaml
+```
 

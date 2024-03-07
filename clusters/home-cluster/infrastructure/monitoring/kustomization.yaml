@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ns-monitoring.yaml
   - loki.yaml
+  - promtail.yaml
   - prometheus.yaml
   - grafana.yaml
   - robusta.yaml

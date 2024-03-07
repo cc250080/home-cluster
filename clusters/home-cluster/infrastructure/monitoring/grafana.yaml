@@ -20,12 +20,11 @@ spec:
       GF_SECURITY_ADMIN_PASSWORD: "changeme"
     replicas: 1
     persistence:
-      enabled: false
-      size: 5Gi
+      enabled: true
+      size: 10Gi
       storageClassName: "nfs-csi"
-      accessModes:
-      - ReadWriteMany
-      type: pvc
+    initChownData:
+      enabled: false
     datasources:
       datasources.yaml:
         apiVersion: 1

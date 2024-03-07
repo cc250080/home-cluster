@@ -5,3 +5,4 @@ resources:
   - ns-monitoring.yaml
   - loki.yaml
   - prometheus.yaml
+  - grafana.yaml

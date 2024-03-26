@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - loeken.yaml
   - jellyfin.yaml
+  - butaca-httproute.yaml

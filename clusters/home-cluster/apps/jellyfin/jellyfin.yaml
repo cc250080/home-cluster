@@ -19,11 +19,14 @@ spec:
     persistence:
       config:
         enabled: true
-        mountPath: /home/cc250080/jellyfin/config
+        isPvc: false
+        hostPath: /home/cc250080/jellyfin/config
       cache:
         enabled: true
-        mountPath: /home/cc250080/jellyfin/cache
+        isPvc: false
+        hostPath: /home/cc250080/jellyfin/cache
       media:
         enabled: true
-        mountPath: /home/cc250080/jellyfin/media
+        isPvc: false
+        hostPath: /home/cc250080/jellyfin/media
 

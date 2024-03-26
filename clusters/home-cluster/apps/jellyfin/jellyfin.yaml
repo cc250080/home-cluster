@@ -19,10 +19,10 @@ spec:
     persistence:
       config:
         enabled: true
-        isPvc: false
+        type: hostPath
         hostPath: /home/cc250080/jellyfin/config
       media:
         enabled: true
-        isPvc: false
+        type: hostPath
         hostPath: /home/cc250080/jellyfin/media
 

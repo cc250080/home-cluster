@@ -21,10 +21,6 @@ spec:
         enabled: true
         isPvc: false
         hostPath: /home/cc250080/jellyfin/config
-      cache:
-        enabled: true
-        isPvc: false
-        hostPath: /home/cc250080/jellyfin/cache
       media:
         enabled: true
         isPvc: false

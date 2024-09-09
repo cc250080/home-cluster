@@ -8,3 +8,4 @@ resources:
   - grafana.yaml
   - prometheus-community.yaml
   - robusta.yaml
+  - stakater-reloader.yaml

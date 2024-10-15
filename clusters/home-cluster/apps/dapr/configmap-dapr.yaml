@@ -6,4 +6,4 @@ metadata:
   annotations:
     reloader.stakater.com/match: "true"
 data:
-  player_initial_lives: "4"
+  player_initial_lives: "3"

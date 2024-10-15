@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-app
+  name: test-app-poc
   namespace: default
   labels:
     app: nginx

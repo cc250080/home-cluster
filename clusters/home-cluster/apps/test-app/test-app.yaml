@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-app-poc
+  name: test-app
   namespace: default
   labels:
     app: nginx
@@ -18,7 +18,7 @@ spec:
         app: nginx
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/app-id: "test-app-poc"
+        dapr.io/app-id: "test-app"
         dapr.io/app-port: "80"
         dapr.io/enable-api-logging: "true"
     spec:

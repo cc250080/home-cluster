@@ -3,5 +3,7 @@ kind: ConfigMap
 metadata:
   name: reloader-poc
   namespace: dapr-system
+  labels:
+    restart-sidecar: yes
 data:
   player_initial_lives: "3"

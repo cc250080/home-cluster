@@ -5,6 +5,8 @@ metadata:
   namespace: default
   labels:
     app: nginx
+  annotations:
+    reloader.stakater.com/search: "true"
 spec:
   replicas: 3
   selector:

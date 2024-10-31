@@ -1,0 +1,49 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: nextcloud
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: nextcloud 
+      version: '6.2.1'
+      sourceRef:
+        kind: HelmRepository
+        name: nextcloud
+        namespace: default
+      interval: 60m
+  values:
+    nextcloud:
+      host: cloud.carles.cc
+      username: admin
+      password: changeme
+      containerPort: 80
+      extraVolumes:
+        - name: nfs
+          nfs:
+            server: "ofelia.carles.cc"
+            path: "/volume1/nextcloud"
+            readOnly: false
+      extraVolumeMounts:
+        - name: nfs
+          mountPath: "/nextcloud_data"
+
+  internalDatabase:
+    enabled: false
+    name: nextcloud
+
+  externalDatabase:
+    enabled: true
+    ## Supported database engines: mysql or postgresql
+    type: postgresql
+    ## Database host. You can optionally include a colon delimited port like "myhost:1234"
+    host: "10.9.8.1"
+    ## Database user
+    user: nextcloud
+    ## Database password
+    password: "nextcloud"
+    ## Database name
+    database: nextcloud
+

@@ -46,4 +46,3 @@ spec:
       password: "nextcloud"
       ## Database name
       database: nextcloud
-

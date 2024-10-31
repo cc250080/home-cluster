@@ -11,4 +11,4 @@ spec:
   rules:
   - backendRefs:
     - name: nextcloud
-      port: 80
+      port: 8080

@@ -45,4 +45,4 @@ spec:
       ## Database password
       password: "nextcloud"
       ## Database name
-      database: nextcloud
+      database: nc

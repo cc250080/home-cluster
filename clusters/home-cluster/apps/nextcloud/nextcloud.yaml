@@ -28,7 +28,7 @@ spec:
             readOnly: false
       extraVolumeMounts:
         - name: nfs
-          mountPath: "/nextcloud_data"
+          mountPath: "/var/www/html/data"
 
     internalDatabase:
       enabled: false

@@ -20,15 +20,15 @@ spec:
       username: admin
       password: changeme
       containerPort: 80
-      extraVolumes:
-        - name: nfs
-          nfs:
-            server: "ofelia.carles.cc"
-            path: "/volume1/nextcloud"
-            readOnly: false
-      extraVolumeMounts:
-        - name: nfs
-          mountPath: "/var/www/html/data"
+      #      extraVolumes:
+#        - name: nfs
+#          nfs:
+#            server: "ofelia.carles.cc"
+#            path: "/volume1/nextcloud"
+#            readOnly: false
+      #      extraVolumeMounts:
+#  - name: nfs
+#          mountPath: "/nextcloud_data"
 
     internalDatabase:
       enabled: false

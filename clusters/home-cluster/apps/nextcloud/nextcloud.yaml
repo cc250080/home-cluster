@@ -47,30 +47,30 @@ spec:
       ## Database name
       database: nc
 
-  redis:
-    enabled: true
-    auth:
-      enabled: false
-      password: 'changeme'
-      # name of an existing secret with Redis® credentials (instead of auth.password), must be created ahead of time
-      existingSecret: ""
-      # Password key to be retrieved from existing secret
-      existingSecretPasswordKey: ""
-    # Since Redis is used for caching only, you might want to use a storageClass with different reclaim policy and backup settings
-    global:
+    redis:
+      enabled: true
+      auth:
+        enabled: false
+        password: 'changeme'
+        # name of an existing secret with Redis® credentials (instead of auth.password), must be created ahead of time
+        existingSecret: ""
+        # Password key to be retrieved from existing secret
+        existingSecretPasswordKey: ""
+      # Since Redis is used for caching only, you might want to use a storageClass with different reclaim policy and backup settings
+      global:
+        storageClass: "nfs-csi"
+      master:
+        persistence:
+          enabled: true
+      replica:
+        persistence:
+          enabled: true
+
+    cronjob:
+      enabled: true
+
+    persistence:
+      enabled: true
       storageClass: "nfs-csi"
-    master:
-      persistence:
-        enabled: true
-    replica:
-      persistence:
-        enabled: true
-
-  cronjob:
-    enabled: true
-
-  persistence:
-    enabled: true
-    storageClass: "nfs-csi"
-    accessMode: ReadWriteOnce
-    size: 32Gi
+      accessMode: ReadWriteOnce
+      size: 32Gi

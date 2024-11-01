@@ -25,15 +25,14 @@ spec:
         runAsGroup: 33
         runAsNonRoot: true
         readOnlyFilesystem: false
-      #      extraVolumes:
-#        - name: nfs
-#          nfs:
-#            server: "ofelia.carles.cc"
-#            path: "/volume1/nextcloud"
-#            readOnly: false
-      #      extraVolumeMounts:
-#  - name: nfs
-#          mountPath: "/nextcloud_data"
+      extraVolumes:
+        - name: local
+          hostPath:
+            path: "/home/cc250080/nextcloud-www"
+            readOnly: false
+      extraVolumeMounts:
+        - name: local
+          mountPath: "/var/www/html/data"
 
     internalDatabase:
       enabled: false
@@ -51,9 +50,3 @@ spec:
       password: "nextcloud"
       ## Database name
       database: nc
-
-    persistence:
-      enabled: true
-      storageClass: "nfs-csi"
-      accessMode: ReadWriteOnce
-      size: 32Gi

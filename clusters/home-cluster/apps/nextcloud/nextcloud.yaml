@@ -17,18 +17,9 @@ spec:
   values:
     nextcloud:
       host: cloud.carles.cc
-      username: admin3
+      username: admin4
       password: changeme
       containerPort: 80
-      extraVolumes:
-        - name: nc
-          hostPath:
-            path: "/home/cc250080/nextcloud-www"
-            readOnly: false
-      extraVolumeMounts:
-        - name: nc
-          mountPath: "/data"
-      datadir: /data
       extraEnv:
         - name: PHP_MEMORY_LIMIT
           value: "1024M"
@@ -56,3 +47,9 @@ spec:
 
     cronjob:
       enabled: true
+
+    persistence:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 32Gi
+      storageClass: "nfs-csi"

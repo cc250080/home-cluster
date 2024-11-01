@@ -21,12 +21,12 @@ spec:
       password: changeme
       containerPort: 80
       extraVolumes:
-        - name: local
+        - name: nc
           hostPath:
             path: "/home/cc250080/nextcloud-www"
             readOnly: false
       extraVolumeMounts:
-        - name: local
+        - name: nc
           mountPath: "/var/www/html/data"
       extraEnv:
         - name: PHP_MEMORY_LIMIT

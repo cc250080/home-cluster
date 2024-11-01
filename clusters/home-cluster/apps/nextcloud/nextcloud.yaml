@@ -53,10 +53,5 @@ spec:
       ## Database name
       database: nextcloud
 
-    redis:
-      enabled: true
-      auth:
-        enabled: false
-
     cronjob:
       enabled: true

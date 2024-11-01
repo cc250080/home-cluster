@@ -17,7 +17,7 @@ spec:
   values:
     nextcloud:
       host: cloud.carles.cc
-      username: admin
+      username: admin2
       password: changeme
       containerPort: 80
       extraVolumes:

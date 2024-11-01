@@ -28,6 +28,13 @@ spec:
       extraVolumeMounts:
         - name: local
           mountPath: "/var/www/html/data"
+      extraEnv:
+        - name: PHP_MEMORY_LIMIT
+          value: "1024M"
+        - name: PHP_UPLOAD_LIMIT
+          value: "16G"
+        - name: OVERWRITEPROTOCOL
+          value: "https"
 
     internalDatabase:
       enabled: false

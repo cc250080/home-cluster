@@ -27,7 +27,7 @@ spec:
             readOnly: false
       extraVolumeMounts:
         - name: nc
-          mountPath: "/var/www/html/data"
+          mountPath: "/var/www/html/"
       extraEnv:
         - name: PHP_MEMORY_LIMIT
           value: "1024M"

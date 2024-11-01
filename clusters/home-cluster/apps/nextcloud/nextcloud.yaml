@@ -20,11 +20,6 @@ spec:
       username: admin
       password: changeme
       containerPort: 80
-      podSecurityContext:
-        runAsUser: 33
-        runAsGroup: 33
-        runAsNonRoot: true
-        readOnlyFilesystem: false
       extraVolumes:
         - name: local
           hostPath:

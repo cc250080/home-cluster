@@ -47,9 +47,6 @@ spec:
       ## Database name
       database: nc
 
-    cronjob:
-      enabled: false
-
     persistence:
       enabled: true
       storageClass: "nfs-csi"

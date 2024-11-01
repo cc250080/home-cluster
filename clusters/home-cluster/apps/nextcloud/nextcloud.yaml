@@ -49,4 +49,4 @@ spec:
       ## Database password
       password: "nextcloud"
       ## Database name
-      database: nc
+      database: nextcloud

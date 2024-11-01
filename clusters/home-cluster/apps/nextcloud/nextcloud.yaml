@@ -48,7 +48,7 @@ spec:
       database: nc
 
     redis:
-      enabled: true
+      enabled: false
       auth:
         enabled: false
         password: 'changeme'
@@ -67,7 +67,7 @@ spec:
           enabled: true
 
     cronjob:
-      enabled: true
+      enabled: false
 
     persistence:
       enabled: true

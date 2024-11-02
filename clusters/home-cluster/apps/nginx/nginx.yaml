@@ -65,7 +65,7 @@ data:
         listen       80;
         server_name  cloud.carles.cc;
         location / {
-          proxy_pass https://10.9.8.15;
+          proxy_pass https://sacarino.carles.cc;
           proxy_ssl_verify off;
           proxy_buffering off;
           proxy_set_header X-Real-IP $remote_addr;

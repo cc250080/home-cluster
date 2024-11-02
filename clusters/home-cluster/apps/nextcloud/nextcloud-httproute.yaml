@@ -10,5 +10,5 @@ spec:
   - "cloud.carles.cc"
   rules:
   - backendRefs:
-    - name: nextcloud
-      port: 8080
+    - name: nextcloud-external
+      port: 80

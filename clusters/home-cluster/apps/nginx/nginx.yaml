@@ -87,6 +87,14 @@ data:
         location = /50x.html {
           root   /usr/share/nginx/html;
         }
+
+        location /.well-known/carddav {
+        return 301 $scheme://$host/remote.php/dav;
+        }
+
+        location /.well-known/caldav {
+        return 301 $scheme://$host/remote.php/dav;
+        }
+
       }
     }
-

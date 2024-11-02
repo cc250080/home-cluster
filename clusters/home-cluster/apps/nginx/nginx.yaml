@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx
+  namespace: default
 spec:
   replicas: 1
   selector:
@@ -28,6 +29,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nginx
+  namespace: default
 spec:
   ports:
     - port: 80
@@ -40,6 +42,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config
+  namespace: default
 data:
   nginx.conf: |
     user  nginx;

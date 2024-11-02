@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          volumeMounts:
+            - mountPath: /etc/nginx/nginx.conf
+              name: config
+              subPath: nginx.conf
+      volumes:
+        - name: config
+          configMap:
+            name: config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  ports:
+    - port: 80
+      nodePort: 30080
+  selector:
+    app: nginx
+  type: NodePort
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  nginx.conf: |
+    user  nginx;
+    worker_processes  1;
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
+    events {
+      worker_connections  1024;
+    }
+    http {
+      include       /etc/nginx/mime.types;
+      default_type  application/octet-stream;
+      log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+      access_log  /var/log/nginx/access.log  main;
+      sendfile        on;
+      keepalive_timeout  65;
+      server {
+        listen       80;
+        server_name  cloud.carles.cc;
+        location / {
+          proxy_pass https://10.9.8.15;
+        }
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+          root   /usr/share/nginx/html;
+        }
+      }
+    }
+

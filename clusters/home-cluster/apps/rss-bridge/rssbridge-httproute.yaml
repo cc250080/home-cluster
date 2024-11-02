@@ -1,14 +1,14 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: nextcloud-route
+  name: rssbridge-route
   namespace: default
 spec:
   parentRefs:
   - name: bacterio-gw
   hostnames:
-  - "cloud.carles.cc"
+  - "rss-bridge.carles.cc"
   rules:
   - backendRefs:
-    - name: nextcloud-external
+    - name: rss-bridge
       port: 80

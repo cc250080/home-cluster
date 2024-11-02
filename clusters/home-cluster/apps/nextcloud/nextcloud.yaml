@@ -17,18 +17,16 @@ spec:
   values:
     nextcloud:
       host: cloud.carles.cc
-      username: admin
+      username: admin4
       password: changeme
       containerPort: 80
-      #      extraVolumes:
-#        - name: nfs
-#          nfs:
-#            server: "ofelia.carles.cc"
-#            path: "/volume1/nextcloud"
-#            readOnly: false
-      #      extraVolumeMounts:
-#  - name: nfs
-#          mountPath: "/nextcloud_data"
+      extraEnv:
+        - name: PHP_MEMORY_LIMIT
+          value: "1024M"
+        - name: PHP_UPLOAD_LIMIT
+          value: "16G"
+        - name: OVERWRITEPROTOCOL
+          value: "https"
 
     internalDatabase:
       enabled: false
@@ -45,10 +43,13 @@ spec:
       ## Database password
       password: "nextcloud"
       ## Database name
-      database: nc
+      database: nextcloud
+
+    cronjob:
+      enabled: true
 
     persistence:
       enabled: true
-      storageClass: "nfs-csi"
       accessMode: ReadWriteOnce
       size: 32Gi
+      storageClass: "nfs-csi"

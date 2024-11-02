@@ -66,6 +66,7 @@ data:
         server_name  cloud.carles.cc;
         location / {
           proxy_pass https://10.9.8.15;
+          proxy_ssl_verify off;
         }
         error_page   500 502 503 504  /50x.html;
         location = /50x.html {

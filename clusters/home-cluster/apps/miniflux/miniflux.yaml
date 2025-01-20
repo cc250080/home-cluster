@@ -18,7 +18,7 @@ spec:
     replicaCount: 1
     env:
       # -- Postgresql connection parameters. Will be generated if Postgresql subchart is enabled. [[ref]](https://miniflux.app/docs/configuration.html#database-url)
-      DATABASE_URL: "postgres://miniflux:miniflux@10.9.8.1/miniflux?sslmode=disable"
+      DATABASE_URL: "postgres://miniflux:miniflux@sacarino.carles.cc/miniflux?sslmode=disable"
       # -- Set to `1` to create an admin user from environment variables.
       CREATE_ADMIN: "1"
       # -- Admin user login, it's used only if `CREATE_ADMIN` is enabled.

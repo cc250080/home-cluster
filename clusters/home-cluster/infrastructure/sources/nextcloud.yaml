@@ -1,8 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
-  name: nextcloud-aio
+  name: nextcloud
   namespace: default
 spec:
   interval: 10m0s
-  url: https://nextcloud.github.io/all-in-one/ 
+  url: https://nextcloud.github.io/helm/

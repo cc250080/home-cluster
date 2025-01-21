@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - gabe656-helmrepository.yaml
   - csi-driver-nfs.yaml
-  - nextcloud-aio.yaml
+  - nextcloud.yaml
   - grafana.yaml
   - prometheus-community.yaml
   - stakater-reloader.yaml

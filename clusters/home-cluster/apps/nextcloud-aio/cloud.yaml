@@ -7,7 +7,7 @@ spec:
   interval: 5m
   chart:
     spec:
-      chart: nextcloud-aio 
+      chart: nextcloud-aio-helm-chart
       version: '10.3.0'
       sourceRef:
         kind: HelmRepository

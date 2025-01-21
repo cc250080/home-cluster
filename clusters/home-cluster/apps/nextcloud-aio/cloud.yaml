@@ -17,7 +17,6 @@ spec:
   values:
     DATABASE_PASSWORD: nextcloud          # TODO! This needs to be a unique and good password!
     FULLTEXTSEARCH_PASSWORD: nextcloud           # TODO! This needs to be a unique and good password!
-    IMAGINARY_SECRET: nextcloud           # TODO! This needs to be a unique and good password!
     NC_DOMAIN: cloud.carles.cc          # TODO! Needs to be changed to the domain that you want to use for Nextcloud.
     NEXTCLOUD_PASSWORD: changeme6          # TODO! This is the password of the initially created Nextcloud admin with username admin.
     IMAGINARY_SECRET: nextcloud           # TODO! This needs to be a unique and good password!

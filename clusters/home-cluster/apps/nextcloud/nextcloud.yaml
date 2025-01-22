@@ -80,13 +80,13 @@ spec:
           # ignored if nextcloud.objectstore.s3.existingSecret is not empty string
           secretKey: ""
           # use legacy auth method
-          legacyAuth: false
+          legacyAuth: true
           # s3 endpoint to use; only required if you're not using AWS
           host: "sacarino.carles.cc"
           # use TLS/SSL for S3 connections
           ssl: false
           # default port that can be changed based on your object store, e.g. for minio, you can use 9000
-          port: "9001"
+          port: "9000"
           # this is the default in the nextcloud docs
           region: "eu-west-1"
           # required if using s3, the name of the bucket you'd like to use

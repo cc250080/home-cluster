@@ -15,7 +15,7 @@ spec:
     filters:
       - type: RequestHeaderModifier
         requestHeaderModifier:
-          add:
+          set:
             - name: X-Robots-Tag
               value: noindex,nofollow
             - name: X-Permitted-Cross-Domain-Policies

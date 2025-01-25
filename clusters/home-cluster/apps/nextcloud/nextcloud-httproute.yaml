@@ -12,3 +12,13 @@ spec:
   - backendRefs:
     - name: nextcloud
       port: 8080
+    filters:
+      - type: RequestHeaderModifier
+        requestHeaderModifier:
+          add:
+            - name: X-Robots-Tag
+              value: noindex,nofollow
+              name: X-Permitted-Cross-Domain-Policies
+              value: none
+              name: Strict-Transport-Security
+              value: 15552000

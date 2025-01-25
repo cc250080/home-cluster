@@ -22,3 +22,12 @@ spec:
               value: none
             - name: Strict-Transport-Security
               value: "15552000"
+      - type: ResponseHeaderModifier
+        responseHeaderModifier:
+          set:
+            - name: X-Robots-Tag
+              value: noindex,nofollow
+            - name: X-Permitted-Cross-Domain-Policies
+              value: none
+            - name: Strict-Transport-Security
+              value: "15552000"

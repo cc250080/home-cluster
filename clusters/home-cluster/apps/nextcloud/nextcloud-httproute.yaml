@@ -21,4 +21,4 @@ spec:
             - name: X-Permitted-Cross-Domain-Policies
               value: none
             - name: Strict-Transport-Security
-              value: 15552000
+              value: "15552000"

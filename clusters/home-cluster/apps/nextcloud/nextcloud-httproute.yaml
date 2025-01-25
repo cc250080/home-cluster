@@ -18,7 +18,7 @@ spec:
           add:
             - name: X-Robots-Tag
               value: noindex,nofollow
-              name: X-Permitted-Cross-Domain-Policies
+            - name: X-Permitted-Cross-Domain-Policies
               value: none
-              name: Strict-Transport-Security
+            - name: Strict-Transport-Security
               value: 15552000

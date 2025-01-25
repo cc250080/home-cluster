@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - gabe656-helmrepository.yaml
   - csi-driver-nfs.yaml
+  - jameswynn-homepage.yaml

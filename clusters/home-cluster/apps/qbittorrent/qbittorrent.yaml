@@ -44,7 +44,7 @@ spec:
           http:
             port: 8080
       bittorrent:
-        enabled: false
+        enabled: true
         ports:
           bittorrent:
             enabled: true

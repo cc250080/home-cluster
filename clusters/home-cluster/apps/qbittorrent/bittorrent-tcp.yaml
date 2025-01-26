@@ -1,0 +1,13 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: TCPRoute
+metadata:
+  name: tcp-bittorrent-6881
+  namespace: default
+spec:
+  parentRefs:
+  - name: bacterio-gw
+    sectionName: bittorrent
+  rules:
+  - backendRefs:
+    - name: qbitorrent-bittorrent
+      port: 6881

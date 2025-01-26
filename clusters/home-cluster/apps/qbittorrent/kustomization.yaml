@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - qbittorrent.yaml
   - qbittorrent-httproute.yaml
+  - bittorrent-tcp.yaml

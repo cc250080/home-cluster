@@ -7,8 +7,8 @@ spec:
   parentRefs:
   - name: bacterio-gw
   hostnames:
-  - "miniflux.carles.cc"
+  - "homepage.carles.cc"
   rules:
   - backendRefs:
-    - name: miniflux
-      port: 8080
+    - name: homepage
+      port: 3000

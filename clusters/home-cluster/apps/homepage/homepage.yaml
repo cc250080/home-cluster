@@ -20,7 +20,7 @@ spec:
       # tag: v0.6.0
 
     # Enable RBAC. RBAC is necessary to use Kubernetes integration
-    enableRbac: false
+    enableRbac: true
 
     extraClusterRoles:
       # - apiGroups:
@@ -99,7 +99,7 @@ spec:
       widgets:
         - resources:
             # change backend to 'kubernetes' to use Kubernetes integration. Requires RBAC.
-            backend: resources
+            backend: kubernetes
             expanded: true
             cpu: true
             memory: true
@@ -107,21 +107,21 @@ spec:
             provider: duckduckgo
             target: _blank
         ## Uncomment to enable Kubernetes integration
-        # - kubernetes:
-        #     cluster:
-        #       show: true
-        #       cpu: true
-        #       memory: true
-        #       showLabel: true
-        #       label: "cluster"
-        #     nodes:
-        #       show: true
-        #       cpu: true
-        #       memory: true
-        #       showLabel: true
+        - kubernetes:
+            cluster:
+              show: true
+              cpu: true
+              memory: true
+              showLabel: true
+              label: "cluster"
+            nodes:
+              show: true
+              cpu: true
+              memory: true
+              showLabel: true
       kubernetes:
         # change mode to 'cluster' to use RBAC service account
-        mode: disable
+        mode: cluster
       docker:
       settings:
 
@@ -155,7 +155,7 @@ spec:
 
     persistence:
       logs:
-        enabled: true
+        enabled: false
         type: emptyDir
         mountPath: /app/config/logs
 

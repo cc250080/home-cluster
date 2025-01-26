@@ -4,7 +4,7 @@ metadata:
   name: homepage
   namespace: default
 spec:
-  interval: 5m
+  interval: 25m
   chart:
     spec:
       chart: homepage
@@ -33,9 +33,9 @@ spec:
     serviceAccount:
       # Specify a different service account name. When blank it will default to the release
       # name if *create* is enabled, otherwise it will refer to the default service account.
-      name: ""
+      name: "homepage"
       # Create service account. Needed when RBAC is enabled.
-      create: false
+      create: true
 
     service:
       main:

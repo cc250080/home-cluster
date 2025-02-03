@@ -8,8 +8,12 @@ spec:
     app: qbittorrent
   ports:
     - protocol: UDP
-      name: torrent
+      name: torrent-udp
       port: 6881
       targetPort: 6881
       nodePort: 30007
-
+    - protocol: TCP
+      name: torrent-tcp
+      port: 6881
+      targetPort: 6881
+      nodePort: 30007

@@ -96,7 +96,7 @@ spec:
                 CONFIG: "/config/config.xml"
     persistence:
       config:
-        enabled: false
+        enabled: true
         targetSelector:
           main:
             main:
@@ -106,7 +106,7 @@ spec:
               readOnly: true
     configmap:
       dashboard:
-        enabled: false
+        enabled: true
         labels:
           grafana_dashboard: "1"
         data:

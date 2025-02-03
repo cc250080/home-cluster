@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+  labels:
+    app: qbitorrent
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      containers:
+      - name: qbittorrent
+        image: lscr.io/linuxserver/qbittorrent:5.0.3
+        env:
+        - name: WEBUI_PORT
+          value: "8080"
+        - name: TORRENTING_PORT
+          value: "6881"
+        - name: TZ
+          value: "Europe/Madrid"
+        ports:
+        - containerPort: 8080
+        - containerPort: 6881
+        volumeMounts:
+        - mountPath: /config
+          name: qbittorrent-config            
+        - mountPath: /downloads
+          name: qbittorrent-downloads            
+      volumes:
+      - name: qbittorrent-config
+        # mount /data/foo, but only if that directory already exists
+        hostPath:
+          path: /home/cc250080/qbittorrent-config # directory location on host
+          type: Directory # this field is optional
+      - name: qbittorrent-downloads
+        # mount /data/foo, but only if that directory already exists
+        hostPath:
+          path: /mnt/Incoming/Downloads # directory location on host
+          type: Directory # this field is optional

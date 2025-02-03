@@ -97,6 +97,9 @@ spec:
     persistence:
       config:
         enabled: true
+        storageClass: "nfs-csi"
+        accessMode: ReadWriteOnce
+        size: 20Gi
         targetSelector:
           main:
             main:

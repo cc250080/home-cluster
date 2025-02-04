@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  labels:
+    app: prowlarr
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prowlarr
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      containers:
+      - name: prowlarr
+        image: ghcr.io/hotio/prowlarr:latest
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: UMASK
+          value: "002"
+        - name: TZ
+          value: "Europe/Madrid"
+        ports:
+        - containerPort: 9696
+        volumeMounts:
+        - mountPath: /config
+          name: prowlarr-config            
+      volumes:
+      - name: prowlarr-config
+        # mount /data/foo, but only if that directory already exists
+        hostPath:
+          path: /home/cc250080/prowlarr-config # directory location on host
+          type: Directory # this field is optional

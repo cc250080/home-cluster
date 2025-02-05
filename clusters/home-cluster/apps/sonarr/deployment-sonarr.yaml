@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+  labels:
+    app: sonarr
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      containers:
+      - name: sonarr
+        image: ghcr.io/hotio/sonarr:latest
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: UMASK
+          value: "002"
+        - name: TZ
+          value: "Europe/Madrid"
+        ports:
+        - containerPort: 8989
+        volumeMounts:
+        - mountPath: /config
+          name: sonarr-config            
+        - mountPath: /data
+          name: sonarr-data            
+      volumes:
+      - name: sonarr-config
+        # mount /data/foo, but only if that directory already exists
+        hostPath:
+          path: /home/cc250080/sonarr-config # directory location on host
+          type: Directory # this field is optional
+      - name: sonarr-data
+        # mount /data/foo, but only if that directory already exists
+        hostPath:
+          path: /home/cc250080/sonarr-data # directory location on host
+          type: Directory # this field is optional

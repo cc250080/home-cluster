@@ -32,7 +32,7 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: sonarr-config            
-        - mountPath: /downloads
+        - mountPath: /data/downloads
           name: sonarr-data            
       volumes:
       - name: sonarr-config

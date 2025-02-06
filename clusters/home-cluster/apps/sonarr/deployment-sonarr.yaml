@@ -32,7 +32,7 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: sonarr-config            
-        - mountPath: /data
+        - mountPath: /downloads
           name: sonarr-data            
       volumes:
       - name: sonarr-config
@@ -43,5 +43,5 @@ spec:
       - name: sonarr-data
         # mount /data/foo, but only if that directory already exists
         hostPath:
-          path: /home/cc250080/sonarr-data # directory location on host
+          path: /mnt/Incoming/Downloads # directory location on host
           type: Directory # this field is optional
